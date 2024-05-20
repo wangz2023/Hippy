@@ -57,8 +57,10 @@ import { EventDispatcher } from './modules/javascript/EventDispatcher';
 import { HippyRootView } from '../renderer_native';
 import { DevtoolsManager } from './devsupport/DevtoolsManager';
 import { DevSupportManager } from './devsupport/DevSupportManager';
+import { DevServerCallBack } from './devsupport/DevServerCallBack';
+import { HippyJsException } from './common/HippyJsException';
 
-export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
+export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy, DevServerCallBack {
   private libHippy: HippyLibrary
   private resourceManager: resmgr.ResourceManager | null = null
   private providers: Array<HippyAPIProvider> | null = null
@@ -83,6 +85,7 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   private mDevSupportManager: DevSupportManager | null = null;
 
   private destroyCallback: Function | null = null;
+  private rootView: HippyRootView | null = null;
 
   constructor(params: EngineInitParams) {
     this.params = params;
@@ -119,15 +122,28 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
     // this.mProcessors = params.processors;
   }
 
+  onInitDevError(e: HippyJsException): void {
+     // TODO
+  }
+
+  onDebugReLoad(): void {
+    if (this.rootView) {
+      this.destroyModule(this.rootView.getRootId(), ()=> {
+        this.mEngineContext?.destroyBridge(true);
+      });
+    }
+  }
+
   onBackPressed(handler: BackPressHandler): boolean {
     if (this.mEngineContext != null
       && this.mEngineContext.getModuleManager().getNativeModule(DeviceEventModule.NAME)
         != null) {
-      let nativeModule = this.mEngineContext.getModuleManager()
-        .getNativeModule(DeviceEventModule.NAME)
+      let nativeModule = this.mEngineContext.getModuleManager().getNativeModule(DeviceEventModule.NAME)
       if (nativeModule instanceof DeviceEventModule) {
         return nativeModule.onBackPressed(handler);
-      } else return false;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -138,7 +154,6 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   }
 
   public initDevModule() {
-    // this.mEngineContext?.getDevSupportManager().setDevCallback(this);
     if (this.params.debugMode) {
       this.mDevSupportManager = new DevSupportManager(
         this.mGlobalConfigs,
@@ -149,6 +164,8 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
       let url = this.mDevSupportManager.createResourceUrl(this.mServerBundleName);
       this.mCoreBundleLoader = new HippyRemoteBundleLoader(url as string, false, "");
       (this.mCoreBundleLoader as HippyRemoteBundleLoader).setIsDebugMode(true);
+      // 注入调试回调
+      this.mDevSupportManager.setDevCallback(this);
     }
   }
 
@@ -236,7 +253,8 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
       }
       this.mCoreBundleLoader = coreBundleLoader;
     }
-    let rootView = this.mEngineContext!.createRootView(loadParams);
+    const rootView = this.mEngineContext!.createRootView(loadParams);
+    this.rootView = rootView;
     this.loadJsModule(loadParams, rootView.getRootId(), loadCallback)
     if (this.params.debugMode && this.mDevSupportManager) {
       this.mDevSupportManager.attachToHost(this.params.context, rootView.getRootId());

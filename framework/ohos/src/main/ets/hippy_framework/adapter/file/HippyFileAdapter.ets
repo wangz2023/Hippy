@@ -26,5 +26,5 @@ export interface HippyFileAdapter {
 
   downloadFile(holder: ResourceDataHolder, callback: ProcessorCallback):void
 
-  downloadFileSync(holder: ResourceDataHolder): void
+  downloadFileSync(holder: ResourceDataHolder, isCached: boolean): void
 }

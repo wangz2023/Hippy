@@ -74,7 +74,7 @@ export class HippyResourceLoader implements ResourceLoader {
       } else {
         let fileAdapter = this.engineContext.getGlobalConfigs().getFileAdapter()
         if (fileAdapter) {
-          fileAdapter.downloadFileSync(holder)
+          fileAdapter.downloadFileSync(holder, true)
           return true;
         }
       }

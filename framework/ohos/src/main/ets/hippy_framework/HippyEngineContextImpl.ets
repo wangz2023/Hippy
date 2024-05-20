@@ -138,7 +138,6 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     this.mBridgeManager = bridgeManagerImpl;
     this.mJsDriver.setBridgeCallback(bridgeManagerImpl);
     this.mDevSupportManager = devSupportManager;
-    // this.mDevSupportManager.setDevCallback(this);
 
     // DevtoolsManager创建
     this.mDevtoolsManager = new DevtoolsManager(params.libHippy, params.debugMode);

@@ -59,16 +59,19 @@ export class FileRequestAdapter implements HippyFileAdapter {
     })
   }
 
-  public async downloadFileSync(mDataHolder: ResourceDataHolder) {
+  public async downloadFileSync(mDataHolder: ResourceDataHolder, isCached = false) {
     let filePath = this.ctx.filesDir + '/' + this.geFileName(mDataHolder.uri);
     let res = fs.accessSync(filePath);
     if (res) {
-      // let stat = fs.statSync(filePath);
-      // LogUtils.i(FILE_REQ_TAG, "get file info succeed, the size of file is " + stat.size);
-      // fs.unlinkSync(filePath);
-      mDataHolder.resultCode = FetchResultCode.OK;
-      mDataHolder.setBufferByFilePath(filePath);
-      return;
+      if (isCached) {
+        LogUtils.i(FILE_REQ_TAG, "get file cahced, filePath is " + filePath);
+        mDataHolder.resultCode = FetchResultCode.OK;
+        mDataHolder.setBufferByFilePath(filePath);
+        return;
+      }
+      let stat = fs.statSync(filePath);
+      LogUtils.i(FILE_REQ_TAG, "get file info succeed, the size of file is " + stat.size);
+      fs.unlinkSync(filePath);
     } else {
       LogUtils.i(FILE_REQ_TAG, "file not exists");
     }
