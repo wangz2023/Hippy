@@ -20,6 +20,8 @@ import { HippyModuleManager } from './modules/HippyModuleManager';
 import { HippyAPIProvider } from './bridge/HippyAPIProvider';
 import { HippyJsException } from './common/HippyJsException';
 import { DevSupportManager } from './devsupport/DevSupportManager';
+import { DevToolsManager } from './devsupport/DevToolsManager';
+import { LogUtils } from '../support/utils/LogUtils';
 
 export class HippyEngineContextImpl implements HippyEngineContext {
   public vfsManager: VfsManager
@@ -39,8 +41,7 @@ export class HippyEngineContextImpl implements HippyEngineContext {
   // TODO
   private mDevSupportManager: DevSupportManager;
 
-  // private mDevtoolsManager: DevtoolsManager;
-
+  // private mDevToolsManager: DevToolsManager;
 
   public constructor(
     params: EngineInitParams,
@@ -119,6 +120,23 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     this.mDevSupportManager = new DevSupportManager(globalConfigs, params.debugMode, params.debugServerHost,
       params.debugBundleName, params.remoteServerUrl);
     // this.mDevSupportManager.setDevCallback(this);
+
+
+    // this.mDevToolsManager = new DevToolsManager(params.libHippy, true);
+    // let rs = this.mDevToolsManager.addWangz(1, 2);
+    // LogUtils.i('wangz', "wangz::" + rs);
+    //
+    // let gconfig: HippyGlobalConfigs = this.getGlobalConfigs();
+    // let gcontext = gconfig.getContext();
+    // let localCachePath = gcontext?.cacheDir;
+    // localCachePath = localCachePath ? localCachePath : "";
+    // let debugUrl = this.getDevSupportManager().createDebugUrl(params.debugServerHost);
+    // // String localCachePath = getGlobalConfigs().getContext().getCacheDir()
+    // //   .getAbsolutePath();
+    // this.mDevToolsManager.create(localCachePath, debugUrl);
+    // LogUtils.i('wangz', "wangz2::" +1);
+
+
   }
 
   getLibHippy(): HippyLibrary {

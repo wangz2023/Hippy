@@ -29,6 +29,12 @@ import { FrameNode } from '@kit.ArkUI';
 import { HippyRenderViewForCApiParams } from '../renderer_native/capi/HippyRenderViewBuilderCApi';
 
 export interface HippyLibrary {
+  Wangz_Add(a: number, b: number): number;
+  Wangz_OnCreateDevtools(dataDir: string, wsUrl: string): number;
+  Wangz_OnDestroyDevtools(devtoolsId: number, isReload: boolean): void;
+  Wangz_OnBindDevtools(devtoolsId: number, driverId: number, domId: number, renderId: number): void;
+  Wangz_OnAttachToRoot(devtoolsId: number, rootId: number): void;
+
   DomManager_SetRenderManager(instanceId: number, renderId: number): void;
   DomManager_CreateDomManager(): number;
   DomManager_DestroyDomManager(domManagerId: number): void;

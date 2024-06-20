@@ -26,7 +26,7 @@ add_subdirectory("${HIPPY_FOOTSTONE_CPP_DIR}" ./footstone)
 add_subdirectory("${HIPPY_OH_NAPI_CPP_DIR}" ./oh_napi)
 #add_subdirectory("${HIPPY_DRIVER_JS_CPP_DIR}" ./driver_js)
 add_subdirectory("${HIPPY_DOM_CPP_DIR}" ./dom)
-#add_subdirectory("${HIPPY_VFS_CPP_DIR}" ./vfs)
+add_subdirectory("${HIPPY_VFS_CPP_DIR}" ./vfs)
 add_subdirectory("./connector")
 
 target_link_libraries(hippy_impl PUBLIC

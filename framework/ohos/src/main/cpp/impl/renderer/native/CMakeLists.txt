@@ -47,9 +47,19 @@ GlobalPackages_Add_footstone()
 target_link_libraries(${PROJECT_NAME} PRIVATE footstone)
 # endregion
 
+# region vfs
+GlobalPackages_Add_vfs()
+target_link_libraries(${PROJECT_NAME} PRIVATE vfs)
+# endregion
+
 # region napi
 GlobalPackages_Add_oh_napi()
 target_link_libraries(${PROJECT_NAME} PRIVATE oh_napi)
+# endregion
+
+# region devtools_integration
+add_subdirectory(${PROJECT_ROOT_DIR}/devtools/devtools-integration/native ${CMAKE_CURRENT_BINARY_DIR}/devtools-integration/native)
+target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration_native)
 # endregion
 
 # region source set
@@ -115,6 +125,8 @@ set(SOURCE_SET
   src/components/waterfall_item_view.cc
   src/components/waterfall_view.cc
   src/components/web_view.cc
+
+  src/wangz.cc
   )
 set(PUBLIC_SOURCE_SET
   src/native_render_provider_capi.cc
