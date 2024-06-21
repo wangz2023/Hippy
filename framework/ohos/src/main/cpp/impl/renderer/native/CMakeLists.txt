@@ -47,6 +47,11 @@ GlobalPackages_Add_footstone()
 target_link_libraries(${PROJECT_NAME} PRIVATE footstone)
 # endregion
 
+## region vfs
+#GlobalPackages_Add_vfs()
+#target_link_libraries(${PROJECT_NAME} PRIVATE vfs)
+## endregion
+
 # region napi
 GlobalPackages_Add_oh_napi()
 target_link_libraries(${PROJECT_NAME} PRIVATE oh_napi)

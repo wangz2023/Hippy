@@ -31,6 +31,13 @@ function(GlobalPackages_Add_dom)
   endif ()
 endfunction()
 
+function(GlobalPackages_Add_wangz)
+#  if (NOT TARGET wangz)
+#    InfraPackage_Add(WANGZ
+#        LOCAL "${PROJECT_ROOT_DIR}/wangz/napi")
+#  endif ()
+endfunction()
+
 function(GlobalPackages_Add_footstone)
   if (NOT TARGET footstone)
     InfraPackage_Add(FOOTSTONE

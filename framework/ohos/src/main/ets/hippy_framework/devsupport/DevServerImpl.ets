@@ -75,7 +75,13 @@ export class DevServerImpl implements DevServerInterface, OnReloadListener {
   }
 
   createDebugUrl(host: string, componentName: string, debugClientId: string): string {
-    return ""
+    if (this.mDebugMode && this.mServerConfig != undefined) {
+      if (componentName == "") {
+        componentName = this.mServerConfig?.getBundleName();
+      }
+      return this.mFetchHelper.createDebugURL(host, componentName, debugClientId);
+    }
+    return "";
   }
 
   setDevServerCallback(devServerCallback: DevServerCallBack): void {

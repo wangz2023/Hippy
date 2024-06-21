@@ -41,6 +41,11 @@
 #include "driver/vm/v8/v8_vm.h"
 #endif
 
+#ifdef ENABLE_INSPECTOR
+#include "devtools/devtools_data_source.h"
+#include "devtools/vfs/devtools_handler.h"
+#endif
+
 namespace hippy {
 inline namespace framework {
 inline namespace connector {
@@ -109,8 +114,11 @@ static napi_value CreateJsDriver(napi_env env, napi_callback_info info) {
   if (arkTs.IsArray(args[vm_param_index]) && arkTs.GetArrayLength(args[vm_param_index]) >= 2) {
     has_vm_init_param = true;
   }
-  // auto vfs_id = arkTs.GetInteger(args[9]);
-  // auto devtools_id = arkTs.GetInteger(args[10]);
+    
+#ifdef ENABLE_INSPECTOR
+//   auto vfs_id = arkTs.GetInteger(args[9]);
+  auto devtools_id = arkTs.GetInteger(args[10]);
+#endif
 
   FOOTSTONE_LOG(INFO) << "CreateJsDriver begin, enable_v8_serialization = " << static_cast<uint32_t>(enable_v8_serialization)
                       << ", is_dev_module = " << static_cast<uint32_t>(is_dev_module)

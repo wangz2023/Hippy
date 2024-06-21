@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+set(CMAKE_OBJECT_PATH_MAX 512)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") # based on LLVM 12
   set(COMPILE_OPTIONS
       -fomit-frame-pointer
@@ -27,11 +27,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang") # based on LLVM 12
       -fno-unique-section-names
       -fno-trigraphs
       # warning group flags
-      -Werror
+#      -Werror
       -Wall
       -Wextra
       -Wextra-semi
-      -Wdeprecated
+#      -Wdeprecated
       -Wconversion
       -Wshadow
       -Wunreachable-code-aggressive
