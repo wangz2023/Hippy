@@ -58,15 +58,10 @@ GlobalPackages_Add_dom()
 target_link_libraries(${PROJECT_NAME} PRIVATE dom)
 # endregion
 
-# region wangz
-#GlobalPackages_Add_wangz()
-#target_link_libraries(${PROJECT_NAME} PRIVATE wangz)
+# region js_driver
+add_subdirectory(${PROJECT_ROOT_DIR}/driver/js ${CMAKE_CURRENT_BINARY_DIR}/_deps/driver/js)
+target_link_libraries(${PROJECT_NAME} PUBLIC js_driver)
 # endregion
-
-## region js_driver
-#add_subdirectory(${PROJECT_ROOT_DIR}/driver/js ${CMAKE_CURRENT_BINARY_DIR}/_deps/driver/js)
-#target_link_libraries(${PROJECT_NAME} PUBLIC js_driver)
-## endregion
 
 ## region native_renderer
 #add_subdirectory(${CPP_ROOT_DIR}/../renderer/native
@@ -74,30 +69,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dom)
 #target_link_libraries(${PROJECT_NAME} PUBLIC native_renderer)
 ## endregion
 
-## region devtools
-#GlobalPackages_Add_devtools_backend()
-#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_backend)
-## endregion
-#
-## region devtools_integration
-#add_subdirectory(${PROJECT_ROOT_DIR}/devtools/devtools-integration/native ${CMAKE_CURRENT_BINARY_DIR}/devtools-integration/native)
-#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration_native)
-## endregion
-
-
 GlobalPackages_Add_devtools_backend()
 target_link_libraries(${PROJECT_NAME} PUBLIC devtools_backend)
 GlobalPackages_Add_devtools_integration()
 target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration)
 
+
 # region source set
 set(PUBLIC_SOURCE_SET
-#  src/dom_manager_napi.cc
-#  src/js_driver_napi.cc
-#  src/ark2js.cc
-#  src/js2ark.cc
-#  src/exception_handler.cc
-#  src/native_renderer_napi.cc
   src/wangz.cc
   )
 target_sources(${PROJECT_NAME} PUBLIC ${PUBLIC_SOURCE_SET})
