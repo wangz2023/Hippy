@@ -20,6 +20,8 @@ import { HippyModuleManager } from './modules/HippyModuleManager';
 import { HippyAPIProvider } from './bridge/HippyAPIProvider';
 import { HippyJsException } from './common/HippyJsException';
 import { DevSupportManager } from './devsupport/DevSupportManager';
+import { DevToolsManager } from './devsupport/DevToolsManager';
+import { LogUtils } from '../support/utils/LogUtils';
 
 export class HippyEngineContextImpl implements HippyEngineContext {
   public vfsManager: VfsManager
@@ -39,7 +41,7 @@ export class HippyEngineContextImpl implements HippyEngineContext {
   // TODO
   private mDevSupportManager: DevSupportManager;
 
-  // private mDevtoolsManager: DevtoolsManager;
+  private mDevToolsManager: DevToolsManager;
 
 
   public constructor(
@@ -132,6 +134,10 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     this.mDevSupportManager = new DevSupportManager(globalConfigs, params.debugMode, params.debugServerHost,
       params.debugBundleName, params.remoteServerUrl);
     // this.mDevSupportManager.setDevCallback(this);
+
+    this.mDevToolsManager = new DevToolsManager(params.libHippy, true);
+    let rs = this.mDevToolsManager.addWangz(1, 2);
+    LogUtils.i('wangz', "wangz::" + rs);
   }
 
   getLibHippy(): HippyLibrary {
