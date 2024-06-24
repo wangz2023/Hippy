@@ -41,7 +41,7 @@ export class HippyEngineContextImpl implements HippyEngineContext {
   // TODO
   private mDevSupportManager: DevSupportManager;
 
-  private mDevToolsManager: DevToolsManager;
+  // private mDevToolsManager: DevToolsManager;
 
   public constructor(
     params: EngineInitParams,
@@ -122,9 +122,9 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     // this.mDevSupportManager.setDevCallback(this);
 
 
-    this.mDevToolsManager = new DevToolsManager(params.libHippy, true);
-    let rs = this.mDevToolsManager.addWangz(1, 2);
-    LogUtils.i('wangz', "wangz::" + rs);
+    // this.mDevToolsManager = new DevToolsManager(params.libHippy, true);
+    // let rs = this.mDevToolsManager.addWangz(1, 2);
+    // LogUtils.i('wangz', "wangz::" + rs);
     //
     // let gconfig: HippyGlobalConfigs = this.getGlobalConfigs();
     // let gcontext = gconfig.getContext();

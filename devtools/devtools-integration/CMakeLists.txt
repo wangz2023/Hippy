@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 3.14)
 project("devtools_integration")
 
 set(CMAKE_CXX_STANDARD 17)
-#set(OHOS "OHOS")
+set(OHOS true)
 
 if (VOLTRON)
     add_subdirectory(${PROJECT_ROOT_DIR}/devtools/devtools-integration/voltron)

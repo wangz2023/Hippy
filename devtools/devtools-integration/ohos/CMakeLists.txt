@@ -24,7 +24,7 @@ project("devtools_integration")
 
 get_filename_component(PROJECT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../.." REALPATH)
 
-include("${PROJECT_ROOT_DIR}/buildconfig/cmake/GlobalPackagesModule.cmake")
+include("${PROJECT_ROOT_DIR}/buildconfig/cmake/InfraPackagesModule.cmake")
 include("${PROJECT_ROOT_DIR}/buildconfig/cmake/compiler_toolchain.cmake")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -33,56 +33,30 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(${PROJECT_NAME} STATIC)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTIONS})
-
-# region vm
-if ("${JS_ENGINE}" STREQUAL "V8")
-    if (NOT TARGET v8)
-        message(FATAL_ERROR "The V8 target not found, peer dependency not satisfied")
-    endif()
-    target_link_libraries(${PROJECT_NAME} PRIVATE v8)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE "JS_V8")
-    get_target_property(V8_WITHOUT_INSPECTOR v8 INTERFACE_V8_WITHOUT_INSPECTOR)
-    if (V8_WITHOUT_INSPECTOR)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE "V8_WITHOUT_INSPECTOR")
-    endif ()
-elseif ("${JS_ENGINE}" STREQUAL "JSC")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE "JS_JSC")
-endif ()
 # endregion
 
+## region jni
+#GlobalPackages_Add_jni()
+#target_link_libraries(${PROJECT_NAME} PUBLIC jni)
+## endregion
+
 # region footstone
-if (OHOS)
-  GlobalPackages_Add_footstone()
-else ()
-  GlobalPackages_Add(footstone)
-endif ()
+GlobalPackages_Add_footstone()
 target_link_libraries(${PROJECT_NAME} PRIVATE footstone)
 # endregion
 
-# region vfs
-if (OHOS)
-  GlobalPackages_Add_vfs()
-else ()
-  GlobalPackages_Add(vfs)
-endif ()
-target_link_libraries(${PROJECT_NAME} PRIVATE vfs)
-# endregion
-
 # region dom
-if (OHOS)
-  GlobalPackages_Add_dom()
-else ()
-  GlobalPackages_Add(dom)
-endif ()
+GlobalPackages_Add_dom()
 target_link_libraries(${PROJECT_NAME} PRIVATE dom)
 # endregion
 
+# region vfs
+GlobalPackages_Add_vfs()
+target_link_libraries(${PROJECT_NAME} PRIVATE vfs)
+# endregion
+
 # region devtools
-if (OHOS)
-  GlobalPackages_Add_devtools_backend()
-else ()
-  GlobalPackages_Add(devtools_backend)
-endif ()
+GlobalPackages_Add_devtools_backend()
 target_link_libraries(${PROJECT_NAME} PRIVATE devtools_backend)
 # endregion
 
@@ -92,6 +66,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration_native)
 # endregion
 
 # region source set
-set(SOURCE_SET src/devtools_napi.cc)
-target_sources(${PROJECT_NAME} PRIVATE ${SOURCE_SET})
+set(SOURCE_SET
+    src/devtools_napi.cc)
+
+target_sources(${PROJECT_NAME} PUBLIC ${SOURCE_SET})
 # endregion
