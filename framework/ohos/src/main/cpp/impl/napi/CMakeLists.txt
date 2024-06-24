@@ -58,10 +58,10 @@ GlobalPackages_Add_dom()
 target_link_libraries(${PROJECT_NAME} PRIVATE dom)
 # endregion
 
-# region js_driver
-add_subdirectory(${PROJECT_ROOT_DIR}/driver/js ${CMAKE_CURRENT_BINARY_DIR}/_deps/driver/js)
-target_link_libraries(${PROJECT_NAME} PUBLIC js_driver)
-# endregion
+## region js_driver
+#add_subdirectory(${PROJECT_ROOT_DIR}/driver/js ${CMAKE_CURRENT_BINARY_DIR}/_deps/driver/js)
+#target_link_libraries(${PROJECT_NAME} PUBLIC js_driver)
+## endregion
 
 ## region native_renderer
 #add_subdirectory(${CPP_ROOT_DIR}/../renderer/native
