@@ -22,20 +22,11 @@
 
 #include "footstone/string_view.h"
 #include "footstone/task_runner.h"
-#include <js_native_api.h>
-#include <js_native_api_types.h>
 
 namespace hippy {
 inline namespace framework {
-inline namespace devtools {
-inline namespace napi {
-
-class DevToolsNapi {
-public:
-    // 构造函数
-    DevToolsNapi();
-    static napi_value Add(napi_env env, napi_callback_info info);
-};
+inline namespace connector {
+inline namespace wangz {
 
 
 }

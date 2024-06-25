@@ -69,6 +69,21 @@ add_subdirectory(${CPP_ROOT_DIR}/../renderer/native
 target_link_libraries(${PROJECT_NAME} PUBLIC native_renderer)
 # endregion
 
+
+
+GlobalPackages_Add_devtools_backend()
+target_link_libraries(${PROJECT_NAME} PUBLIC devtools_backend)
+GlobalPackages_Add_devtools_integration()
+target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration)
+
+## region devtools_integration
+#add_subdirectory(${PROJECT_ROOT_DIR}/devtools/devtools-integration/native ${CMAKE_CURRENT_BINARY_DIR}/devtools-integration/native)
+#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration_native)
+## endregion
+
+
+
+
 # region source set
 set(PUBLIC_SOURCE_SET
   src/dom_manager_napi.cc
@@ -76,6 +91,9 @@ set(PUBLIC_SOURCE_SET
   src/ark2js.cc
   src/js2ark.cc
   src/exception_handler.cc
-  src/native_renderer_napi.cc)
+  src/native_renderer_napi.cc
+  src/wangz.cc
+  )
 target_sources(${PROJECT_NAME} PUBLIC ${PUBLIC_SOURCE_SET})
+message(STATUS "wangz::js_driver_napi--${ENABLE_INSPECTOR}")
 # endregion

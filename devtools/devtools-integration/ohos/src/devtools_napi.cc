@@ -33,7 +33,7 @@ constexpr char kDevToolsTag[] = "DevTools-Napi:";
 std::shared_ptr<WorkerManager> worker_manager;
 using DevtoolsDataSource = hippy::devtools::DevtoolsDataSource;
 
-static napi_value Add(napi_env env, napi_callback_info info) {
+napi_value DevToolsNapi::Add(napi_env env, napi_callback_info info) {
   //     size_t requireArgc = 2;
   size_t argc = 2;
   napi_value args[2] = {nullptr};

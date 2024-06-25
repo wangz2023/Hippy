@@ -29,7 +29,7 @@ add_subdirectory("${HIPPY_DOM_CPP_DIR}" ./dom)
 #add_subdirectory("${HIPPY_VFS_CPP_DIR}" ./vfs)
 add_subdirectory("./connector")
 
-add_subdirectory("./napi")
+#add_subdirectory("./napi")
 
 target_link_libraries(hippy_impl PUBLIC
   libace_napi.z.so
@@ -44,7 +44,7 @@ target_link_libraries(hippy_impl PUBLIC
   dom
   vfs
   connector
-  devtools_napi
+#  devtools_napi
 )
 
 target_compile_options(hippy_impl PUBLIC ${hippy_compile_options} -std=c++17)
