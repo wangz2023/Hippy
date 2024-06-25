@@ -53,6 +53,12 @@ GlobalPackages_Add_vfs()
 target_link_libraries(${PROJECT_NAME} PRIVATE vfs)
 # endregion
 
+GlobalPackages_Add_devtools_backend()
+target_include_directories(${PROJECT_NAME} PUBLIC $<TARGET_PROPERTY:devtools_backend,INTERFACE_INCLUDE_DIRECTORIES>)
+
+GlobalPackages_Add_devtools_integration()
+target_include_directories(${PROJECT_NAME} PRIVATE $<TARGET_PROPERTY:devtools_integration,INTERFACE_INCLUDE_DIRECTORIES>)
+
 # region dom
 GlobalPackages_Add_dom()
 target_link_libraries(${PROJECT_NAME} PRIVATE dom)
@@ -68,21 +74,6 @@ add_subdirectory(${CPP_ROOT_DIR}/../renderer/native
   ${CMAKE_CURRENT_BINARY_DIR}/_deps/renderer/native)
 target_link_libraries(${PROJECT_NAME} PUBLIC native_renderer)
 # endregion
-
-
-
-#GlobalPackages_Add_devtools_backend()
-#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_backend)
-#GlobalPackages_Add_devtools_integration()
-#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration)
-
-## region devtools_integration
-#add_subdirectory(${PROJECT_ROOT_DIR}/devtools/devtools-integration/native ${CMAKE_CURRENT_BINARY_DIR}/devtools-integration/native)
-#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration_native)
-## endregion
-
-
-
 
 # region source set
 set(PUBLIC_SOURCE_SET

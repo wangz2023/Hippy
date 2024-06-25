@@ -22,7 +22,7 @@ cmake_minimum_required(VERSION 3.14)
 
 project("devtools_integration")
 
-get_filename_component(PROJECT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../.." REALPATH)
+get_filename_component(PROJECT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../" REALPATH)
 
 include("${PROJECT_ROOT_DIR}/buildconfig/cmake/InfraPackagesModule.cmake")
 include("${PROJECT_ROOT_DIR}/buildconfig/cmake/compiler_toolchain.cmake")
@@ -36,8 +36,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTIONS})
 # endregion
 
 # region jni
-GlobalPackages_Add_jni()
-target_link_libraries(${PROJECT_NAME} PUBLIC jni)
+GlobalPackages_Add_oh_napi()
+target_link_libraries(${PROJECT_NAME} PUBLIC oh_napi)
 # endregion
 
 # region footstone

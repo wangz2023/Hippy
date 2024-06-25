@@ -44,7 +44,7 @@ target_link_libraries(hippy_impl PUBLIC
   dom
   vfs
   connector
-#  devtools_napi
+  devtools_integration
 )
 
 target_compile_options(hippy_impl PUBLIC ${hippy_compile_options} -std=c++17)
