@@ -69,11 +69,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dom)
 #target_link_libraries(${PROJECT_NAME} PUBLIC native_renderer)
 ## endregion
 
-GlobalPackages_Add_devtools_backend()
-target_link_libraries(${PROJECT_NAME} PUBLIC devtools_backend)
-GlobalPackages_Add_devtools_integration()
-target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration)
-
+#GlobalPackages_Add_devtools_backend()
+#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_backend)
+#GlobalPackages_Add_devtools_integration()
+#add_subdirectory(${PROJECT_ROOT_DIR}/devtools/devtools-integration ${CMAKE_CURRENT_BINARY_DIR}/devtools-integration)
+#target_link_libraries(${PROJECT_NAME} PUBLIC devtools_integration)
 
 # region source set
 set(PUBLIC_SOURCE_SET

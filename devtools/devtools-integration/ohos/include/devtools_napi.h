@@ -30,12 +30,12 @@ inline namespace framework {
 inline namespace devtools {
 inline namespace napi {
 
-class DevToolsNapi {
-public:
-    // 构造函数
-    DevToolsNapi();
-    static napi_value Add(napi_env env, napi_callback_info info);
-};
+// class DevToolsNapi {
+// public:
+//     // 构造函数
+//     DevToolsNapi();
+//     static napi_value Add(napi_env env, napi_callback_info info);
+// };
 
 
 }

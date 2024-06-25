@@ -35,10 +35,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTIONS})
 # endregion
 
-## region jni
-#GlobalPackages_Add_jni()
-#target_link_libraries(${PROJECT_NAME} PUBLIC jni)
-## endregion
+# region jni
+GlobalPackages_Add_jni()
+target_link_libraries(${PROJECT_NAME} PUBLIC jni)
+# endregion
 
 # region footstone
 GlobalPackages_Add_footstone()

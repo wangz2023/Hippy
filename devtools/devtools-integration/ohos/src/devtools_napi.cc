@@ -33,7 +33,8 @@ constexpr char kDevToolsTag[] = "DevTools-Napi:";
 std::shared_ptr<WorkerManager> worker_manager;
 using DevtoolsDataSource = hippy::devtools::DevtoolsDataSource;
 
-napi_value DevToolsNapi::Add(napi_env env, napi_callback_info info) {
+// napi_value DevToolsNapi::Add(napi_env env, napi_callback_info info) {
+static napi_value Add(napi_env env, napi_callback_info info) {
   //     size_t requireArgc = 2;
   size_t argc = 2;
   napi_value args[2] = {nullptr};
@@ -208,6 +209,12 @@ static napi_value OnAttachToRoot(napi_env env, napi_callback_info info) {
     napi_value result = arkTs.GetUndefined();
     return result;
 }
+
+REGISTER_OH_NAPI("Wangz", "Wangz_Add", Add)
+REGISTER_OH_NAPI("Wangz", "Wangz_OnCreateDevtools", OnCreateDevtools)
+REGISTER_OH_NAPI("Wangz", "Wangz_OnDestroyDevtools", OnDestroyDevtools)
+REGISTER_OH_NAPI("Wangz", "Wangz_OnBindDevtools", OnBindDevtools)
+REGISTER_OH_NAPI("Wangz", "Wangz_OnAttachToRoot", OnAttachToRoot)
 
 } // namespace napi
 } // namespace devtools
