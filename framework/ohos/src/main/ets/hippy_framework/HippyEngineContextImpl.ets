@@ -136,8 +136,8 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     // DevtoolsManager创建
     this.mDevtoolsManager = new DevtoolsManager(params.libHippy, params.debugMode);
     if (params.debugMode) {
-      let rs = this.mDevtoolsManager?.addWangz(1, 2);
-      LogUtils.d('wangz', "wangz::" + rs);
+      // let rs = this.mDevtoolsManager?.addWangz(1, 2);
+      // LogUtils.d('wangz', "wangz::" + rs);
       let localCachePath = this.getGlobalConfigs().getContext()?.cacheDir;
       let debugUrl = this.getDevSupportManager().createDebugUrl(params.debugServerHost);
       this.mDevtoolsManager?.create(localCachePath as string, debugUrl);

@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import fs from '@ohos.file.fs';
 import { BridgeCallback, HippyBridge } from './HippyBridge';
 import { JsDriver } from '../connector/JsDriver';
 import { NativeCallback } from '../connector/NativeCallback';
@@ -29,6 +30,7 @@ import { LogUtils } from '../../support/utils/LogUtils';
 export class HippyBridgeImpl implements HippyBridge {
 
   public static TAG: string = "HippyBridgeImpl";
+  private static mCodeCacheRootDir: string | null = null;
   private mEngineContext: HippyEngineContext;
   private mBridgeCallback: BridgeCallback;
   private mEnableV8Serialization: boolean;
@@ -53,16 +55,29 @@ export class HippyBridgeImpl implements HippyBridge {
     this.mV8InitParams = v8InitParams;
     this.mJsDriver = jsDriver;
 
-    // TODO Code Cache
-    // if (mCodeCacheRootDir == null) {
-    //         Context context = mContext.getGlobalConfigs().getContext();
-    //         File hippyFile = FileUtils.getHippyFile(context);
-    //         if (hippyFile != null) {
-    //             mCodeCacheRootDir =
-    //                     hippyFile.getAbsolutePath() + File.separator + "codecache"
-    //                             + File.separator;
-    //         }
-    // }
+    // mJsDriver.setBridgeProxy(this);
+    // TODO Code Cache write by Wangz
+    if (HippyBridgeImpl.mCodeCacheRootDir == null) {
+      let context = this.mEngineContext.getGlobalConfigs().getContext();
+      let baseFile: string | undefined;
+      if (context?.getApplicationContext() != null) {
+        baseFile = context?.getApplicationContext().filesDir;
+      } else {
+        baseFile = context?.filesDir;
+      }
+      let childDir = baseFile + "/hippy";
+      let rs = fs.accessSync(childDir);
+      if (!rs) {
+        fs.mkdirSync(childDir);
+      } else {
+        const stat: fs.Stat = fs.statSync(childDir);
+        if (!stat || !stat.isDirectory()) {
+          fs.mkdirSync(childDir, true);
+        }
+      }
+      HippyBridgeImpl.mCodeCacheRootDir = childDir + "/codecache/";
+      return;
+    }
   }
 
   initJSBridge(globalConfig: string, callback: NativeCallback, groupId: number): void {
@@ -81,7 +96,8 @@ export class HippyBridgeImpl implements HippyBridge {
       this.mEnableV8Serialization)
   }
 
-  runScriptFromUri(uri: string, canUseCodeCache: boolean, codeCacheTag: string, callback: NativeCallback): boolean {
+  runScriptFromUri(uri: string, canUseCodeCache: boolean, codeCacheTag: string,
+    callback: NativeCallback): boolean {
     //  if (!mInit) {
     //     return false;
     // }
@@ -90,18 +106,22 @@ export class HippyBridgeImpl implements HippyBridge {
       return false;
     }
     const assetManager = context.resourceManager;
-    const codeCacheDir = "";
-    // TODO Code Cache
-    // if (!TextUtils.isEmpty(codeCacheTag) && !TextUtils.isEmpty(mCodeCacheRootDir)) {
-    //     codeCacheDir = mCodeCacheRootDir + codeCacheTag + File.separator;
-    //     File codeCacheFile = new File(codeCacheDir);
-    //     if (!codeCacheFile.exists() && !codeCacheFile.mkdirs()) {
-    //         canUseCodeCache = false;
-    //         codeCacheDir = "";
-    //     }
-    // } else {
-    //     canUseCodeCache = false;
-    // }
+    let codeCacheDir = "";
+    // TODO Code Cache writen by Wangz
+    if (codeCacheTag != "" && HippyBridgeImpl.mCodeCacheRootDir as string != "") {
+      codeCacheDir = HippyBridgeImpl.mCodeCacheRootDir + codeCacheTag;
+      let rs = fs.accessSync(codeCacheDir);
+      if (!rs) {
+        return false;
+      }
+      const stat: fs.Stat = fs.statSync(codeCacheDir);
+      if (!stat || !stat.isDirectory()) {
+        canUseCodeCache = false;
+        codeCacheDir = "";
+      }
+    } else {
+      canUseCodeCache = true;
+    }
     return this.mJsDriver.runScriptFromUri(uri, assetManager, canUseCodeCache, codeCacheDir,
       this.mEngineContext.getVfsId(), callback);
   }
