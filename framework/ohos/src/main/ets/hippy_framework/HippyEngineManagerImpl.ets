@@ -52,6 +52,7 @@ import { HippyEngineContextImpl } from './HippyEngineContextImpl';
 import { LogUtils } from '../support/utils/LogUtils';
 import { HippyMap } from '../support/common/HippyTypes';
 import { DeviceEventModule } from './modules/native';
+import { HippyRemoteBundleLoader } from './bridge/bundleloader/HippyRemoteBundleLoader';
 
 export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   private libHippy: HippyLibrary
@@ -135,7 +136,12 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   }
 
   public initDevModule() {
-    // TODO Debug
+    if (this.params.debugMode) {
+      let url =
+        this.mEngineContext?.getDevSupportManager().createResourceUrl(this.mServerBundleName);
+      this.mJsBundleLoader = new HippyRemoteBundleLoader(url as string, false, "");
+      (this.mJsBundleLoader as HippyRemoteBundleLoader).setIsDebugMode(true);
+    }
   }
 
   public restartEngine(initCallback: HippyEngineInitCallback) {
@@ -225,7 +231,9 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   }
 
   destroyEngine(): void {
-
+    if (this.mEngineContext != null) {
+      this.mEngineContext.destroy(false);
+    }
   }
 
   attachToRootView(rootId: number): void {

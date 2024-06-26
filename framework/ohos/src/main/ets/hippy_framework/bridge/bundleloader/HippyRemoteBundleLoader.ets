@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LogUtils } from '../../../support/utils/LogUtils';
 import { TextUtils } from '../../../support/utils/TextUtils';
 import { NativeCallback } from '../../connector/NativeCallback';
 import { HippyBridge } from '../HippyBridge';
@@ -47,9 +48,11 @@ export class HippyRemoteBundleLoader implements HippyBundleLoader {
     if (TextUtils.isEmpty(this.mUrl)) {
       return;
     }
-
-    // boolean ret = bridge.runScriptFromUri(mUrl, null, mCanUseCodeCache, mCodeCacheTag, callback);
-    // LogUtils.d("HippyRemoteBundleLoader", "load: ret" + ret);
+    if (this.mIsDebugMode) {
+      let ret =
+        bridge.runScriptFromUri(this.mUrl, this.mCanUseCodeCache, this.mCodeCacheTag, callback);
+      LogUtils.d("HippyRemoteBundleLoader", "load: ret" + ret);
+    }
   }
 
   public getPath(): string {

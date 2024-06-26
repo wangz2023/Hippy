@@ -25,7 +25,7 @@ import { util } from '@kit.ArkTS';
 import { HippyJsException } from '../../hippy_framework/common/HippyJsException';
 import { HippyLibrary } from '../../hippy_library/HippyLibrary';
 
-export class DevToolsManager {
+export class DevtoolsManager {
   private mInstanceUUID = util.generateRandomUUID()
   private libHippy: HippyLibrary
   private mDebugMode: boolean
