@@ -43,7 +43,7 @@ export class DevServerHelper {
     if (this.mRemoteServerData.isValid()) {
       // remote debugging in non usb
       return util.format(DevServerHelper.BUNDLE_URL_FORMAT, this.mRemoteServerData.getScheme(), this.mRemoteServerData.getHost(), this.mRemoteServerData.getPath(),
-        devMode, hmr, jsMinify);
+        devMode+'', hmr+'', jsMinify+'');
     }
     return util.format(DevServerHelper.BUNDLE_URL_FORMAT, DevServerHelper.DEFAULT_BUNDLE_SCHEME, host, bundleName, devMode, hmr, jsMinify);
   }

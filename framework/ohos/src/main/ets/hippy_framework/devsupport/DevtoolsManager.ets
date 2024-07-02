@@ -24,6 +24,9 @@ import { DevServerInterface } from './DevServerInterface';
 import { util } from '@kit.ArkTS';
 import { HippyJsException } from '../../hippy_framework/common/HippyJsException';
 import { HippyLibrary } from '../../hippy_library/HippyLibrary';
+import { JsDriver } from '../connector/JsDriver';
+import { DomManager } from '../connector/DomManager';
+import { NativeRenderer } from '../connector/NativeRenderer';
 
 export class DevtoolsManager {
   private mInstanceUUID = util.generateRandomUUID()
@@ -57,9 +60,9 @@ export class DevtoolsManager {
     }
   }
 
-  public bind(driver: object, dom: object, render: object): void {
+  public bind(driver: JsDriver, dom: DomManager, render: NativeRenderer): void {
     if (this.mDebugMode) {
-      this.onBindDevtools(this.mId, 1, 1, 1);
+      this.onBindDevtools(this.mId, driver.getInstanceId(), dom.getDomManagerId(), render.instanceId);
     }
   }
 

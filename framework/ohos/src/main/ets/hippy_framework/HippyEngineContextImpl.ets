@@ -137,10 +137,10 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     this.mBridgeManager = bridgeManagerImpl;
     this.mJsDriver.setBridgeCallback(bridgeManagerImpl);
     this.mDevSupportManager = new DevSupportManager(
-      globalConfigs, 
-      params.debugMode, 
+      globalConfigs,
+      params.debugMode,
       params.debugServerHost,
-      params.debugBundleName, 
+      params.debugBundleName,
       params.remoteServerUrl);
     // this.mDevSupportManager.setDevCallback(this);
 
@@ -179,6 +179,9 @@ export class HippyEngineContextImpl implements HippyEngineContext {
 
   onRuntimeInitialized(): void {
     this.mJsDriver.attachToDom(this.mDomManager.instanceId)
+    if (this.mDevtoolsManager != null && this.nativeRenderer != null) {
+      this.mDevtoolsManager.bind(this.mJsDriver, this.mDomManager, this.nativeRenderer);
+    }
   }
 
   attachDomToRootView(rootId: number): void {
@@ -199,9 +202,9 @@ export class HippyEngineContextImpl implements HippyEngineContext {
   }
 
   destroy(isReload: boolean) {
-    // if (this.mDevtoolsManager != null) {
-    //   this.mDevtoolsManager.destroy(isReload);
-    // }
+    if (this.mDevtoolsManager != null) {
+      this.mDevtoolsManager.destroy(isReload);
+    }
     if (!isReload) {
       this.mDomManager.destroy();
     }
@@ -250,6 +253,10 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     return this.nativeParams
   }
 
+  getDevtoolsId(): number {
+    return this.mDevtoolsManager != null ? this.mDevtoolsManager.getId() : -1;
+  }
+
   handleException(error: HippyJsException): void {
     if (this.mDebugMode && this.mDevSupportManager != null) {
       this.mDevSupportManager.handleException(error);
@@ -260,12 +267,6 @@ export class HippyEngineContextImpl implements HippyEngineContext {
         // TODO Native Exception
         this.mGlobalConfigs.getExceptionHandler()?.handleNativeException(new HippyJsException('', ''), true);
       }
-    }
-  }
-
-  destroy(isReload: boolean) {
-    if (this.mDevtoolsManager != null) {
-      this.mDevtoolsManager.destroy(isReload);
     }
   }
 }

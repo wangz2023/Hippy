@@ -94,9 +94,13 @@ export class HippyBridgeImpl implements HippyBridge {
     this.mJsDriver.initialize(
       this.mEngineContext.getDomManagerId(),
       this.mEngineContext.getVfsId(),
+      this.mIsDevModule,
       callback,
       globalConfig,
-      this.mEnableV8Serialization)
+      this.mEnableV8Serialization,
+      groupId,
+      this.mEngineContext.getDevtoolsId()
+    )
   }
 
   runScriptFromUri(uri: string, canUseCodeCache: boolean, codeCacheTag: string, callback: NativeCallback): boolean {

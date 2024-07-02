@@ -55,6 +55,8 @@ import { DeviceEventModule } from './modules/native';
 import { HippyRemoteBundleLoader } from './bridge/bundleloader/HippyRemoteBundleLoader';
 import { EventDispatcher } from './modules/javascript/EventDispatcher';
 import { HippyRootView } from '../renderer_native';
+import { DevtoolsManager } from './devsupport/DevtoolsManager';
+import { DevSupportManager } from './devsupport/DevSupportManager';
 
 export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   private libHippy: HippyLibrary
@@ -66,7 +68,6 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   public nativeRenderer: NativeRenderer | null = null
   public mGlobalConfigs: HippyGlobalConfigs
   public mCoreBundleLoader: HippyBundleLoader | null = null;
-  public mJsBundleLoader: HippyBundleLoader | null = null;
   public mDebugMode: boolean;
   public mServerBundleName: string;
   public enableV8Serialization: boolean;
@@ -78,6 +79,8 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   public v8InitParams: V8InitParams | null;
   public nativeParams: HippyMap | null = null;
   public mEngineContext: HippyEngineContextImpl | null = null;
+  private mDevtoolsManager: DevtoolsManager | null = null;
+  private mDevSupportManager: DevSupportManager | null = null;
 
   private destroyCallback: Function | null = null;
 
@@ -137,10 +140,15 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   public initDevModule() {
     // this.mEngineContext?.getDevSupportManager().setDevCallback(this);
     if (this.params.debugMode) {
-      let url =
-        this.mEngineContext?.getDevSupportManager().createResourceUrl(this.mServerBundleName);
-      this.mJsBundleLoader = new HippyRemoteBundleLoader(url as string, false, "");
-      (this.mJsBundleLoader as HippyRemoteBundleLoader).setIsDebugMode(true);
+      this.mDevSupportManager = new DevSupportManager(
+        this.mGlobalConfigs,
+        this.params.debugMode,
+        this.params.debugServerHost,
+        this.params.debugBundleName,
+        this.params.remoteServerUrl);
+      let url = this.mDevSupportManager.createResourceUrl(this.mServerBundleName);
+      this.mCoreBundleLoader = new HippyRemoteBundleLoader(url as string, false, "");
+      (this.mCoreBundleLoader as HippyRemoteBundleLoader).setIsDebugMode(true);
     }
   }
 
@@ -216,20 +224,25 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
     if (!jsDriver || !this.getVfsManager() || !this.resourceManager) {
       return null;
     }
-    let coreBundleLoader: HippyBundleLoader | null = null;
-    if (!TextUtils.isEmpty(loadParams.jsAssetsPath)) {
-      coreBundleLoader = new HippyAssetBundleLoader(this.mGlobalConfigs.getContext()!, loadParams.jsAssetsPath,
-        !TextUtils.isEmpty(loadParams.codeCacheTag), loadParams.codeCacheTag);
-    } else if (!TextUtils.isEmpty(loadParams.jsFilePath)) {
-      coreBundleLoader = new HippyFileBundleLoader(loadParams.jsFilePath,
-        !TextUtils.isEmpty(loadParams.codeCacheTag), loadParams.codeCacheTag);
+    if (!this.mDebugMode) {
+      let coreBundleLoader: HippyBundleLoader | null = null;
+      if (!TextUtils.isEmpty(loadParams.jsAssetsPath)) {
+        coreBundleLoader = new HippyAssetBundleLoader(this.mGlobalConfigs.getContext()!, loadParams.jsAssetsPath,
+          !TextUtils.isEmpty(loadParams.codeCacheTag), loadParams.codeCacheTag);
+      } else if (!TextUtils.isEmpty(loadParams.jsFilePath)) {
+        coreBundleLoader = new HippyFileBundleLoader(loadParams.jsFilePath,
+          !TextUtils.isEmpty(loadParams.codeCacheTag), loadParams.codeCacheTag);
+      }
+      this.mCoreBundleLoader = coreBundleLoader;
     }
-    this.mJsBundleLoader = coreBundleLoader;
 
     let rootView = this.nativeRenderProvider!.getNativeRenderImpl().createRootView(loadParams.componentName, {}, loadParams.wrappedCustomRenderViewBuilder)
     this.mEngineContext!.attachDomToRootView(rootView.getRootId())
     this.mEngineContext!.attachJsToRootView(rootView.getRootId())
     this.loadJsModule(loadParams, rootView.getRootId(), loadCallback)
+    if (this.params.debugMode && this.mDevSupportManager) {
+      this.mDevSupportManager.attachToHost(this.params.context, rootView.getRootId());
+    }
     return rootView;
   }
 
@@ -292,9 +305,9 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
       return;
     }
     if (!this.params.debugMode) {
-      if (this.mJsBundleLoader != null) {
+      if (this.mCoreBundleLoader != null) {
         // TODO 多RootView
-        this.mEngineContext?.getBridgeManager().runBundle(0, this.mJsBundleLoader);
+        this.mEngineContext?.getBridgeManager().runBundle(0, this.mCoreBundleLoader);
       } else {
         LogUtils.e('hippy', 'load module error. jsBundleLoader==null');
         // notifyModuleLoaded(ModuleLoadStatus.STATUS_VARIABLE_NULL,

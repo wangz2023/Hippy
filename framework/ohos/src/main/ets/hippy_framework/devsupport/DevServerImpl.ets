@@ -58,9 +58,10 @@ export class DevServerImpl implements DevServerInterface, OnReloadListener {
 
   createResourceUrl(resName: string): string {
     if (this.mDebugMode && this.mServerConfig != null) {
-      return this.mFetchHelper.createBundleURL(this.mServerConfig.getServerHost(), resName,
-        this.mServerConfig.enableRemoteDebug(), false, false);
-    } else return "";
+      return this.mFetchHelper.createBundleURL(this.mServerConfig.getServerHost(), resName, this.mServerConfig.enableRemoteDebug(), false, false);
+    } else {
+      return ""
+    };
   }
 
   onLoadResourceFailed(url: string, errorMessage: string): void {
