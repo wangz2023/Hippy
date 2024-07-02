@@ -50,9 +50,11 @@ import { HippyThirdPartyAdapter } from './adapter/thirdparty/HippyThirdPartyAdap
 import { HippyEngineContext } from './HippyEngineContext'
 import { HippyEngineContextImpl } from './HippyEngineContextImpl';
 import { LogUtils } from '../support/utils/LogUtils';
-import { HippyMap } from '../support/common/HippyTypes';
+import { HippyAny, HippyMap } from '../support/common/HippyTypes';
 import { DeviceEventModule } from './modules/native';
 import { HippyRemoteBundleLoader } from './bridge/bundleloader/HippyRemoteBundleLoader';
+import { EventDispatcher } from './modules/javascript/EventDispatcher';
+import { HippyRootView } from '../renderer_native';
 
 export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   private libHippy: HippyLibrary
@@ -77,10 +79,7 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
   public nativeParams: HippyMap | null = null;
   public mEngineContext: HippyEngineContextImpl | null = null;
 
-  private isAttachedToRootView: boolean = false;
-  private cachedLoadParams: ModuleLoadParams | null = null;
-  private cachedLoadCallback: HippyModuleLoadCallback | null = null;
-  private cachedRootId: number = 0;
+  private destroyCallback: Function | null = null;
 
   constructor(params: EngineInitParams) {
     this.params = params;
@@ -123,8 +122,8 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
         != null) {
       let nativeModule = this.mEngineContext.getModuleManager()
         .getNativeModule(DeviceEventModule.NAME)
-      if (nativeModule != null ) {
-        return (nativeModule as DeviceEventModule).onBackPressed(handler);
+      if (nativeModule instanceof DeviceEventModule) {
+        return nativeModule.onBackPressed(handler);
       } else return false;
     } else {
       return false;
@@ -198,15 +197,24 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
 
   }
 
+  public sendEvent(event: string, params: HippyAny): void {
+    if (this.mEngineContext != null && this.mEngineContext.getModuleManager() != null) {
+      const eventModule = this.mEngineContext.getModuleManager().getJavaScriptModule(EventDispatcher.MODULE_NAME);
+      if (eventModule != null) {
+        (eventModule as EventDispatcher).receiveNativeEvent(event, params);
+      }
+    }
+  }
+
   public initEngine(initCallback: HippyEngineInitCallback): void {
     this.initDevModule();
     this.restartEngine(initCallback);
   }
 
-  loadModule(loadParams: ModuleLoadParams, loadCallback: HippyModuleLoadCallback) {
+  loadModule(loadParams: ModuleLoadParams, loadCallback: HippyModuleLoadCallback): HippyRootView | null {
     const jsDriver = this.mEngineContext?.getJsDriver();
     if (!jsDriver || !this.getVfsManager() || !this.resourceManager) {
-      return
+      return null;
     }
     let coreBundleLoader: HippyBundleLoader | null = null;
     if (!TextUtils.isEmpty(loadParams.jsAssetsPath)) {
@@ -218,40 +226,37 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
     }
     this.mJsBundleLoader = coreBundleLoader;
 
-    if (this.isAttachedToRootView) {
-      this.mEngineContext!.attachJsToRootView(this.cachedRootId)
-      this.loadJsModule(loadParams, this.cachedRootId, loadCallback)
-    } else {
-      this.cachedLoadParams = loadParams
-      this.cachedLoadCallback = loadCallback
-    }
+    let rootView = this.nativeRenderProvider!.getNativeRenderImpl().createRootView(loadParams.componentName, {}, loadParams.wrappedCustomRenderViewBuilder)
+    this.mEngineContext!.attachDomToRootView(rootView.getRootId())
+    this.mEngineContext!.attachJsToRootView(rootView.getRootId())
+    this.loadJsModule(loadParams, rootView.getRootId(), loadCallback)
+    return rootView;
   }
 
   destroyModule(rootId: number, destroyCallback: HippyModuleDestroyCallback): void {
-
+    this.destroyCallback = destroyCallback;
+    if (this.mEngineContext != null && this.mEngineContext.getBridgeManager() != null) {
+      this.mEngineContext.getBridgeManager().destroyInstance(rootId);
+    }
   }
 
   destroyEngine(): void {
+    if (this.mEngineContext != null) {
+      this.mEngineContext.destroyBridge(false);
+    }
+  }
+
+  onDestroyEngine(): void {
     if (this.mEngineContext != null) {
       this.mEngineContext.destroy(false);
     }
   }
 
-  attachToRootView(rootId: number): void {
-    this.mEngineContext!.attachDomToRootView(rootId)
-    this.isAttachedToRootView = true
-    if (this.cachedLoadParams && this.cachedLoadCallback) {
-      this.mEngineContext!.attachJsToRootView(rootId)
-      this.loadJsModule(this.cachedLoadParams, rootId, this.cachedLoadCallback)
-      this.cachedLoadParams = null
-      this.cachedLoadCallback = null
-    } else {
-      this.cachedRootId = rootId
-    }
-  }
-
   destroyRoot(rootId: number): void {
     this.mEngineContext!.destroyRoot(rootId)
+    if (this.destroyCallback) {
+      this.destroyCallback();
+    }
   }
 
   getVfsManager(): VfsManager {
