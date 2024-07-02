@@ -163,6 +163,7 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
       this.mGlobalConfigs,
       this.mMonitor,
       this.mCoreBundleLoader,
+      this.mDevSupportManager,
     );
     // 提供给 Render 模块的 Proxy
     this.nativeRenderProvider = this.mEngineContext.getNativeRenderProvider()

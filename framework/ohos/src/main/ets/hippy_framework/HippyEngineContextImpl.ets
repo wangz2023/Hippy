@@ -38,8 +38,7 @@ export class HippyEngineContextImpl implements HippyEngineContext {
   private providers: Array<HippyAPIProvider> | null = null
   private libHippy: HippyLibrary
   private mJsDriver: JsDriver
-  // TODO
-  private mDevSupportManager: DevSupportManager;
+  private mDevSupportManager: DevSupportManager | null = null;
   private mDevtoolsManager: DevtoolsManager | null = null;
   private mDebugMode: boolean;
 
@@ -48,7 +47,8 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     domManager: DomManager,
     globalConfigs: HippyGlobalConfigs,
     monitor: TimeMonitor,
-    coreBundleLoader: HippyBundleLoader | null
+    coreBundleLoader: HippyBundleLoader | null,
+    devSupportManager: DevSupportManager| null,
   ) {
     this.mEngineInitParams = params;
     this.libHippy = this.mEngineInitParams.libHippy
@@ -136,12 +136,7 @@ export class HippyEngineContextImpl implements HippyEngineContext {
       this.mJsDriver);
     this.mBridgeManager = bridgeManagerImpl;
     this.mJsDriver.setBridgeCallback(bridgeManagerImpl);
-    this.mDevSupportManager = new DevSupportManager(
-      globalConfigs,
-      params.debugMode,
-      params.debugServerHost,
-      params.debugBundleName,
-      params.remoteServerUrl);
+    this.mDevSupportManager = devSupportManager;
     // this.mDevSupportManager.setDevCallback(this);
 
     // DevtoolsManager创建
@@ -150,8 +145,8 @@ export class HippyEngineContextImpl implements HippyEngineContext {
       // let rs = this.mDevtoolsManager?.addWangz(1, 2);
       // LogUtils.d('wangz', "wangz::" + rs);
       let localCachePath = this.getGlobalConfigs().getContext()?.cacheDir;
-      let debugUrl = this.getDevSupportManager().createDebugUrl(params.debugServerHost);
-      this.mDevtoolsManager?.create(localCachePath as string, debugUrl);
+      let debugUrl = this.getDevSupportManager()?.createDebugUrl(params.debugServerHost);
+      this.mDevtoolsManager?.create(localCachePath as string, debugUrl || '');
       LogUtils.i('wangz', "wangz::2::" + 1);
     }
   }
@@ -173,7 +168,7 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     return this.mEngineInitParams.libHippy
   }
 
-  getDevSupportManager(): DevSupportManager {
+  getDevSupportManager(): DevSupportManager | null {
     return this.mDevSupportManager;
   }
 

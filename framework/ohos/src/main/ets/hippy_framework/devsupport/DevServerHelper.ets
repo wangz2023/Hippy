@@ -45,7 +45,7 @@ export class DevServerHelper {
       return util.format(DevServerHelper.BUNDLE_URL_FORMAT, this.mRemoteServerData.getScheme(), this.mRemoteServerData.getHost(), this.mRemoteServerData.getPath(),
         devMode+'', hmr+'', jsMinify+'');
     }
-    return util.format(DevServerHelper.BUNDLE_URL_FORMAT, DevServerHelper.DEFAULT_BUNDLE_SCHEME, host, bundleName, devMode, hmr, jsMinify);
+    return util.format(DevServerHelper.BUNDLE_URL_FORMAT, DevServerHelper.DEFAULT_BUNDLE_SCHEME, host, bundleName, devMode+'', hmr+'', jsMinify+'');
   }
 
   public createDebugURL(host: string, componentName: string, clientId: string) {
