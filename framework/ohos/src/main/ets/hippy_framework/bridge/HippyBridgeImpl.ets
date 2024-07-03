@@ -76,7 +76,6 @@ export class HippyBridgeImpl implements HippyBridge {
         }
       }
       HippyBridgeImpl.mCodeCacheRootDir = childDir + "/codecache/";
-      return;
     }
   }
 
@@ -116,17 +115,22 @@ export class HippyBridgeImpl implements HippyBridge {
     // TODO Code Cache writen by Wangz
     if (codeCacheTag != "" && HippyBridgeImpl.mCodeCacheRootDir as string != "") {
       codeCacheDir = HippyBridgeImpl.mCodeCacheRootDir + codeCacheTag;
-      let rs = fs.accessSync(codeCacheDir);
-      if (!rs) {
-        return false;
-      }
-      const stat: fs.Stat = fs.statSync(codeCacheDir);
-      if (!stat || !stat.isDirectory()) {
+      try {
+        let rs = fs.accessSync(codeCacheDir);
+        if (!rs) {
+          fs.mkdirSync(codeCacheDir, true);
+        } else {
+          const stat: fs.Stat = fs.statSync(codeCacheDir);
+          if (!stat || !stat.isDirectory()) {
+            fs.mkdirSync(codeCacheDir, true);
+          }
+        }
+      } catch (e) {
         canUseCodeCache = false;
         codeCacheDir = "";
       }
     } else {
-      canUseCodeCache = true;
+      canUseCodeCache = false;
     }
     return this.mJsDriver.runScriptFromUri(uri, assetManager, canUseCodeCache, codeCacheDir,
       this.mEngineContext.getVfsId(), callback);
