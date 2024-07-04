@@ -26,6 +26,7 @@ import { ResourceDataHolder } from '../../../vfs/ResourceDataHolder';
 import { FetchResultCode } from '../http/HippyResourceLoader';
 import fs from '@ohos.file.fs';
 import { BusinessError } from '@kit.BasicServicesKit';
+import { Mutex } from '../../../support/utils/Mutex';
 
 const FILE_REQ_TAG = "FileRequestAdapter"
 
@@ -56,6 +57,35 @@ export class FileRequestAdapter implements HippyFileAdapter {
         LogUtils.e(FILE_REQ_TAG, 'err.code : ' + err.code + ', err.message : ' + err.message);
       }
     })
+  }
+
+  public async downloadFileSync(mDataHolder: ResourceDataHolder) {
+    let filePath = this.ctx.filesDir + '/' + this.geFileName(mDataHolder.uri);
+    let res = fs.accessSync(filePath);
+    if (res) {
+      let stat = fs.statSync(filePath);
+      LogUtils.i(FILE_REQ_TAG, "get file info succeed, the size of file is " + stat.size);
+      fs.unlinkSync(filePath);
+    } else {
+      LogUtils.i(FILE_REQ_TAG, "file not exists");
+    }
+    let task = await request.downloadFile(this.ctx, {
+      url: mDataHolder.uri,
+      filePath: filePath
+    });
+    const taskLock = new Mutex();
+    task.on('complete', () => {
+        LogUtils.i(FILE_REQ_TAG, 'Download task completed.');
+        mDataHolder.resultCode = FetchResultCode.OK;
+        mDataHolder.setBufferByFilePath(filePath);
+        taskLock.unlock();
+    })
+    task.on('fail', (err: number)  => {
+        LogUtils.e(FILE_REQ_TAG, `Failed to download the task. Code: ${err}`);
+        mDataHolder.errorMessage = err.toString()
+        taskLock.unlock();
+    })
+    taskLock.lock();
   }
 
   public downloadFile(mDataHolder: ResourceDataHolder, mCallback: ProcessorCallback) {

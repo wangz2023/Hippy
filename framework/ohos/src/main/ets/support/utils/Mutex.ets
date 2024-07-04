@@ -17,14 +17,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { request } from '@kit.BasicServicesKit'
-import { ProcessorCallback } from '../../../vfs/ProcessorCallback'
-import { ResourceDataHolder } from '../../../vfs/ResourceDataHolder'
 
-export interface HippyFileAdapter {
-  uploadFile(url: string, header: object, method: string, files: Array<request.File>, data: Array<request.RequestData>): Promise<request.UploadTask>
+export class Mutex {
+  locked: boolean = false
 
-  downloadFile(holder: ResourceDataHolder, callback: ProcessorCallback):void
+  async lock() {
+    while (this.locked) {
+      await new Promise<void>((resolve) => {
+        console.log('wait lock')
+        setTimeout(()=> {
+          resolve()
+        }, 100)
+      })
+    }
+    this.locked = true
+  }
 
-  downloadFileSync(holder: ResourceDataHolder): void
+  unlock() {
+    if (!this.locked) {
+      throw new Error('lock status error')
+    }
+    this.locked = false
+  }
 }

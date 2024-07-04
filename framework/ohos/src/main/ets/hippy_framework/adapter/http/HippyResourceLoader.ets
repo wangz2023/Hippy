@@ -67,9 +67,17 @@ export class HippyResourceLoader implements ResourceLoader {
     }
   }
 
-  fetchResourceSync(holder: ResourceDataHolder): boolean {
+   fetchResourceSync(holder: ResourceDataHolder) {
     if (UrlUtils.isWebUrl(holder.uri)) {
-      return false
+      if(holder.uriType === UriType.NORMAL) {
+        // TODO
+      } else {
+        let fileAdapter = this.engineContext.getGlobalConfigs().getFileAdapter()
+        if (fileAdapter) {
+          fileAdapter.downloadFileSync(holder)
+          return true;
+        }
+      }
     } else if (holder.uri.startsWith(HippyAssetBundleLoader.ASSETS_STR)) {
       const resManager = this.engineContext.getGlobalConfigs().getContext()!.resourceManager
       const rawPath = holder.uri.substring(HippyAssetBundleLoader.ASSETS_STR.length)
