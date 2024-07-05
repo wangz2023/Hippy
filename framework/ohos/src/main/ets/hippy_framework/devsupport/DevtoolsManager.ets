@@ -73,23 +73,19 @@ export class DevtoolsManager {
   }
 
   private onCreateDevtools(dataDir: string, wsUrl: string): number {
-    return this.libHippy?.Wangz_OnCreateDevtools(dataDir, wsUrl);
+    return this.libHippy?.Devtools_OnCreateDevtools(dataDir, wsUrl);
   }
 
   private onDestroyDevtools(devtoolsId: number, isReload: boolean): void {
-    this.libHippy?.Wangz_OnDestroyDevtools(devtoolsId, isReload);
+    this.libHippy?.Devtools_OnDestroyDevtools(devtoolsId, isReload);
   }
 
   private onBindDevtools(devtoolsId: number, driverId: number, domId: number,
     renderId: number): void {
-    this.libHippy?.Wangz_OnBindDevtools(devtoolsId, driverId, domId, renderId);
+    this.libHippy?.Devtools_OnBindDevtools(devtoolsId, driverId, domId, renderId);
   }
 
   private onAttachToRoot(devtoolsId: number, rootId: number): void {
-    this.libHippy?.Wangz_OnAttachToRoot(devtoolsId, rootId);
-  }
-
-  public addWangz(a: number, b: number): number {
-    return this.libHippy?.Wangz_Add(a, b);
+    this.libHippy?.Devtools_OnAttachToRoot(devtoolsId, rootId);
   }
 }
