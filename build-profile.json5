@@ -22,21 +22,6 @@
       {
         "name": "release"
       }
-    ],
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "/Users/sherryfancy/.ohos/config/default_wangzHippyDevtools_FwZMYAWm8Ejr0orrms5-vGdbEb8wfXPMRbtANj-0Si4=.cer",
-          "storePassword": "0000001BA8389A3B92EBC59814E4E6F590A47AB77574A75F03AF3E6864BEF4ABCC570D8D7E4934EF657577",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001B1C9D1A1EDC1D424CBBA0E2D6D13A856E57A5C78D7901F4D5D2E94F4A17D61F4FB61430EF9F070E",
-          "profile": "/Users/sherryfancy/.ohos/config/default_wangzHippyDevtools_FwZMYAWm8Ejr0orrms5-vGdbEb8wfXPMRbtANj-0Si4=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/sherryfancy/.ohos/config/default_wangzHippyDevtools_FwZMYAWm8Ejr0orrms5-vGdbEb8wfXPMRbtANj-0Si4=.p12"
-        }
-      }
     ]
   },
   "modules": [
