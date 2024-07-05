@@ -45,7 +45,7 @@ export enum RenderMode {
   FLUTTER
 }
 
-const DEFAULT_DEBUG_SERVER_HOST:string = 'localhost:38989'
+const DEFAULT_DEBUG_SERVER_HOST:string = 'localhost:38989
 
 export class HippyInfo {
   driver:DriverMode = DriverMode.JS_REACT
@@ -100,7 +100,7 @@ struct PageConfiguration {
   initEngine(info:HippyInfo):HippyEngine {
     let params = new EngineInitParams(this.libHippy!, this.abilityContext!)
     params.debugServerHost = info.debugServerHost as string
-    params.debugMode = true
+    params.debugMode = info.isDebugMode as boolean
     params.enableLog = true
     // params.remoteServerUrl = 'http://127.0.0.1:38989/index.bundle?debugUrl=ws%3A%2F%2F127.0.0.1%3A38989%2Fdebugger-proxy'
 
