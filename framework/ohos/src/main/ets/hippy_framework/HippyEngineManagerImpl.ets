@@ -246,6 +246,7 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
 
   destroyModule(rootId: number, destroyCallback: HippyModuleDestroyCallback): void {
     this.destroyCallback = destroyCallback;
+    this.nativeRenderProvider!.getNativeRenderImpl().destroyRoot(rootId)
     if (this.mEngineContext != null && this.mEngineContext.getBridgeManager() != null) {
       this.mEngineContext.getBridgeManager().destroyInstance(rootId);
     }
