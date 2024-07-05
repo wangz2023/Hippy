@@ -66,9 +66,9 @@ export class DevtoolsManager {
     }
   }
 
-  public attachToRoot(root: object): void {
+  public attachToRoot(rootId: number): void {
     if (this.mDebugMode) {
-      this.onAttachToRoot(this.mId, 123);
+      this.onAttachToRoot(this.mId, rootId);
     }
   }
 

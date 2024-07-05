@@ -10,7 +10,7 @@ import { HippyBridgeManagerImpl } from './bridge/HippyBridgeManagerImpl';
 import { DomManager } from './connector/DomManager';
 import { JsDriver } from './connector/JsDriver';
 import { NativeRenderer } from './connector/NativeRenderer';
-import { EngineInitParams } from './HippyEngine';
+import { EngineInitParams, ModuleLoadParams } from './HippyEngine';
 import { HippyEngineContext } from './HippyEngineContext';
 import { HippyGlobalConfigs } from './HippyGlobalConfigs';
 import { HippyModuleManagerImpl, HippyNativeModuleCreator } from './modules/HippyModuleManagerImpl';
@@ -22,6 +22,7 @@ import { HippyJsException } from './common/HippyJsException';
 import { DevSupportManager } from './devsupport/DevSupportManager';
 import { DevtoolsManager } from './devsupport/DevtoolsManager';
 import { LogUtils } from '../support/utils/LogUtils';
+import { HippyRootView } from '../renderer_native/HippyRootView';
 
 export class HippyEngineContextImpl implements HippyEngineContext {
   public vfsManager: VfsManager
@@ -177,6 +178,18 @@ export class HippyEngineContextImpl implements HippyEngineContext {
     if (this.mDevtoolsManager != null && this.nativeRenderer != null) {
       this.mDevtoolsManager.bind(this.mJsDriver, this.mDomManager, this.nativeRenderer);
     }
+  }
+
+  createRootView(loadParams: ModuleLoadParams) {
+    const rootView = this.nativeRenderProvider!.getNativeRenderImpl().createRootView(loadParams.componentName, {}, loadParams.wrappedCustomRenderViewBuilder)
+    if (rootView != null) {
+      this.attachDomToRootView(rootView.getRootId())
+      this.attachJsToRootView(rootView.getRootId())
+      if (this.mDevtoolsManager != null) {
+        this.mDevtoolsManager.attachToRoot(rootView.getRootId());
+      }
+    }
+    return rootView;
   }
 
   attachDomToRootView(rootId: number): void {

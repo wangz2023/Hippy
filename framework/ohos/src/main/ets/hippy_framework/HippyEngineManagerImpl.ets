@@ -236,10 +236,7 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy {
       }
       this.mCoreBundleLoader = coreBundleLoader;
     }
-
-    let rootView = this.nativeRenderProvider!.getNativeRenderImpl().createRootView(loadParams.componentName, {}, loadParams.wrappedCustomRenderViewBuilder)
-    this.mEngineContext!.attachDomToRootView(rootView.getRootId())
-    this.mEngineContext!.attachJsToRootView(rootView.getRootId())
+    let rootView = this.mEngineContext!.createRootView(loadParams);
     this.loadJsModule(loadParams, rootView.getRootId(), loadCallback)
     if (this.params.debugMode && this.mDevSupportManager) {
       this.mDevSupportManager.attachToHost(this.params.context, rootView.getRootId());
