@@ -53,12 +53,6 @@ GlobalPackages_Add_vfs()
 target_link_libraries(${PROJECT_NAME} PRIVATE vfs)
 # endregion
 
-GlobalPackages_Add_devtools_backend()
-target_include_directories(${PROJECT_NAME} PUBLIC $<TARGET_PROPERTY:devtools_backend,INTERFACE_INCLUDE_DIRECTORIES>)
-
-GlobalPackages_Add_devtools_integration()
-target_include_directories(${PROJECT_NAME} PRIVATE $<TARGET_PROPERTY:devtools_integration,INTERFACE_INCLUDE_DIRECTORIES>)
-
 # region dom
 GlobalPackages_Add_dom()
 target_link_libraries(${PROJECT_NAME} PRIVATE dom)
@@ -68,6 +62,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE dom)
 add_subdirectory(${PROJECT_ROOT_DIR}/driver/js ${CMAKE_CURRENT_BINARY_DIR}/_deps/driver/js)
 target_link_libraries(${PROJECT_NAME} PUBLIC js_driver)
 # endregion
+
+GlobalPackages_Add_devtools_backend()
+target_include_directories(${PROJECT_NAME} PUBLIC $<TARGET_PROPERTY:devtools_backend,INTERFACE_INCLUDE_DIRECTORIES>)
+
+GlobalPackages_Add_devtools_integration()
+target_include_directories(${PROJECT_NAME} PRIVATE $<TARGET_PROPERTY:devtools_integration,INTERFACE_INCLUDE_DIRECTORIES>)
 
 # region native_renderer
 add_subdirectory(${CPP_ROOT_DIR}/../renderer/native
@@ -83,7 +83,6 @@ set(PUBLIC_SOURCE_SET
   src/js2ark.cc
   src/exception_handler.cc
   src/native_renderer_napi.cc
-#  src/wangz.cc
   )
 target_sources(${PROJECT_NAME} PUBLIC ${PUBLIC_SOURCE_SET})
 message(STATUS "wangz::js_driver_napi--${ENABLE_INSPECTOR}")
