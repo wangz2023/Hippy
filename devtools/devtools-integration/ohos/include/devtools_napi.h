@@ -25,10 +25,7 @@
 #include <js_native_api.h>
 #include <js_native_api_types.h>
 
-namespace hippy {
-inline namespace framework {
-inline namespace devtools {
-inline namespace napi {
+namespace hippy::devtools {
 
 // class DevToolsNapi {
 // public:
@@ -39,6 +36,4 @@ inline namespace napi {
 
 
 }
-}
-}
-}
+

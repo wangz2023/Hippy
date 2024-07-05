@@ -85,5 +85,4 @@ set(PUBLIC_SOURCE_SET
   src/native_renderer_napi.cc
   )
 target_sources(${PROJECT_NAME} PUBLIC ${PUBLIC_SOURCE_SET})
-message(STATUS "wangz::js_driver_napi--${ENABLE_INSPECTOR}")
 # endregion
