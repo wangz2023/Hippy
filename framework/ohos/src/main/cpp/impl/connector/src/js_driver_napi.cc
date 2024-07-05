@@ -117,11 +117,9 @@ static napi_value CreateJsDriver(napi_env env, napi_callback_info info) {
   }
     
   #ifdef ENABLE_INSPECTOR
-    auto vfs_id = arkTs.GetInteger(args[9]);
+//     auto vfs_id = arkTs.GetInteger(args[9]);
     auto devtools_id = arkTs.GetInteger(args[10]);
   #endif  
-  // auto vfs_id = arkTs.GetInteger(args[9]);
-  // auto devtools_id = arkTs.GetInteger(args[10]);
   auto is_reload = false; // TODO:
 
   FOOTSTONE_LOG(INFO) << "CreateJsDriver begin, enable_v8_serialization = " << static_cast<uint32_t>(enable_v8_serialization)
