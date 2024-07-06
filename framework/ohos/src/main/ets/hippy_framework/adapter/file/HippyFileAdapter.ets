@@ -25,6 +25,4 @@ export interface HippyFileAdapter {
   uploadFile(url: string, header: object, method: string, files: Array<request.File>, data: Array<request.RequestData>): Promise<request.UploadTask>
 
   downloadFile(holder: ResourceDataHolder, callback: ProcessorCallback):void
-
-  downloadFileSync(holder: ResourceDataHolder, isCached: boolean): void
 }

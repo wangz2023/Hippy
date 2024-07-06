@@ -102,6 +102,10 @@ export class HippyBridgeImpl implements HippyBridge {
     )
   }
 
+  getHippyEngineContext(): HippyEngineContext | null {
+    return this.mEngineContext
+  }
+
   runScriptFromUri(uri: string, canUseCodeCache: boolean, codeCacheTag: string, callback: NativeCallback): boolean {
     if (!this.mEngineContext) {
       return false;

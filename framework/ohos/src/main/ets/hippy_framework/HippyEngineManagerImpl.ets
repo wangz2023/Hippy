@@ -163,7 +163,6 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy, DevS
         this.params.remoteServerUrl);
       let url = this.mDevSupportManager.createResourceUrl(this.mServerBundleName);
       this.mCoreBundleLoader = new HippyRemoteBundleLoader(url as string, false, "");
-      (this.mCoreBundleLoader as HippyRemoteBundleLoader).setIsDebugMode(true);
       // 注入调试回调
       this.mDevSupportManager.setDevCallback(this);
     }
