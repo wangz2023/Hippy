@@ -267,6 +267,9 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy, DevS
     if (this.mEngineContext != null && this.mEngineContext.getBridgeManager() != null) {
       this.mEngineContext.getBridgeManager().destroyInstance(rootId);
     }
+    if (this.destroyCallback) {
+      this.destroyCallback();
+    }
   }
 
   destroyEngine(): void {
@@ -283,9 +286,6 @@ export class HippyEngineManagerImpl implements HippyEngine, FrameworkProxy, DevS
 
   destroyRoot(rootId: number): void {
     this.mEngineContext!.destroyRoot(rootId)
-    if (this.destroyCallback) {
-      this.destroyCallback();
-    }
   }
 
   getVfsManager(): VfsManager {
