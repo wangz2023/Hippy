@@ -101,8 +101,7 @@ struct PageConfiguration {
     let params = new EngineInitParams(this.libHippy!, this.abilityContext!)
     params.debugServerHost = info.debugServerHost as string
     params.debugMode = info.isDebugMode as boolean
-    params.enableLog = true
-    // params.remoteServerUrl = 'http://127.0.0.1:38989/index.bundle?debugUrl=ws%3A%2F%2F127.0.0.1%3A38989%2Fdebugger-proxy'
+    // params.enableLog = true
 
     params.providers = new Array(new ExampleAPIProvider())
 

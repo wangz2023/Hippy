@@ -27,13 +27,6 @@
 
 namespace hippy::devtools {
 
-// class DevToolsNapi {
-// public:
-//     // 构造函数
-//     DevToolsNapi();
-//     static napi_value Add(napi_env env, napi_callback_info info);
-// };
-
 
 }
 
