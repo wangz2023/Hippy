@@ -56,7 +56,6 @@ export class HippyBridgeImpl implements HippyBridge {
     this.mJsDriver = jsDriver;
 
     // mJsDriver.setBridgeProxy(this);
-    // TODO Code Cache write by Wangz
     if (HippyBridgeImpl.mCodeCacheRootDir == null) {
       let context = this.mEngineContext.getGlobalConfigs().getContext();
       let baseFile: string | undefined;
@@ -116,7 +115,6 @@ export class HippyBridgeImpl implements HippyBridge {
     }
     const assetManager = context.resourceManager;
     let codeCacheDir = "";
-    // TODO Code Cache writen by Wangz
     if (codeCacheTag != "" && HippyBridgeImpl.mCodeCacheRootDir as string != "") {
       codeCacheDir = HippyBridgeImpl.mCodeCacheRootDir + codeCacheTag;
       try {

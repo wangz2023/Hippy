@@ -38,7 +38,7 @@ static napi_value OnCreateDevtools(napi_env env, napi_callback_info info) {
 
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::vector<napi_value> argVector = arkTs.GetCallbackArgs(info);
-    FOOTSTONE_DLOG(INFO) << "wangz::OnCreateDevtools::" << argVector.size();
+    FOOTSTONE_DLOG(INFO) << "devtools napi::OnCreateDevtools::" << argVector.size();
 
     if (argc != 2) {
       napi_throw_error(env, nullptr, " Requires 2 arguments: data directory and WebSocket URL.");
@@ -75,7 +75,7 @@ static napi_value OnDestroyDevtools(napi_env env, napi_callback_info info) {
 
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::vector<napi_value> argVector = arkTs.GetCallbackArgs(info);
-    FOOTSTONE_DLOG(INFO) << "wangz::OnDestroyDevtools::" << argVector.size();
+    FOOTSTONE_DLOG(INFO) << "devtools napi::OnDestroyDevtools::" << argVector.size();
 
     if (argc != 2) {
       napi_throw_error(env, nullptr, " Requires 2 arguments: data directory and WebSocket URL.");
@@ -109,7 +109,7 @@ static napi_value OnBindDevtools(napi_env env, napi_callback_info info) {
 
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::vector<napi_value> argVector = arkTs.GetCallbackArgs(info);
-    FOOTSTONE_DLOG(INFO) << "wangz::OnBindDevtools::" << argVector.size();
+    FOOTSTONE_DLOG(INFO) << "devtools napi::OnBindDevtools::" << argVector.size();
 
     if (argc != 4) {
       napi_throw_error(env, nullptr, " Requires 4 arguments: data directory and WebSocket URL.");
@@ -148,7 +148,7 @@ static napi_value OnAttachToRoot(napi_env env, napi_callback_info info) {
 
     napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
     std::vector<napi_value> argVector = arkTs.GetCallbackArgs(info);
-    FOOTSTONE_DLOG(INFO) << "wangz::OnAttachToRoot::" << argVector.size();
+    FOOTSTONE_DLOG(INFO) << "devtools napi::OnAttachToRoot::" << argVector.size();
 
     if (argc != 2) {
       napi_throw_error(env, nullptr, " Requires 2 arguments: data directory and WebSocket URL.");
