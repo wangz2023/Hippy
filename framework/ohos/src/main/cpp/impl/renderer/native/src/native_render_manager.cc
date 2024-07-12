@@ -24,6 +24,7 @@
 #include "renderer/native_render_provider_napi.h"
 #include "renderer/native_render_provider_manager.h"
 #include "renderer/api/hippy_view_provider.h"
+#include "renderer/utils/hr_pixel_utils.h"
 #include <cstdint>
 #include <iostream>
 #include <utility>
@@ -200,6 +201,13 @@ void NativeRenderManager::SetRenderDelegate(napi_env ts_env, bool enable_ark_c_a
 
 void NativeRenderManager::InitDensity(double density) {
   density_ = static_cast<float>(density);
+  HRPixelUtils::InitDensity(density);
+}
+
+void NativeRenderManager::AddCustomFontPath(const std::string &fontFamilyName, const std::string &fontPath) {
+    if (fontFamilyName.length() && fontPath.length()) {
+        custom_font_path_map_[fontFamilyName] = fontPath;
+    }
 }
 
 void NativeRenderManager::CreateRenderNode(std::weak_ptr<RootNode> root_node,
@@ -989,7 +997,7 @@ void NativeRenderManager::DoMeasureText(const std::weak_ptr<RootNode> root_node,
   CollectAllProps(textPropMap, node);
 
   float density = GetDensity();
-  OhMeasureText measureInst;
+  OhMeasureText measureInst(custom_font_path_map_);
   OhMeasureResult measureResult;
 
   measureInst.StartMeasure(textPropMap);
@@ -1171,9 +1179,15 @@ bool NativeRenderManager::IsCustomMeasureCNode(const std::string &name) {
   return false;
 }
 
-void NativeRenderManager::RegisterNativeXComponentHandle(OH_NativeXComponent *nativeXComponent, uint32_t root_id, uint32_t node_id) {
+void NativeRenderManager::BindNativeRoot(ArkUI_NodeContentHandle contentHandle, uint32_t root_id, uint32_t node_id) {
   if (enable_ark_c_api_) {
-    c_render_provider_->RegisterNativeXComponentHandle(nativeXComponent, root_id, node_id);
+    c_render_provider_->BindNativeRoot(contentHandle, root_id, node_id);
+  }
+}
+  
+void NativeRenderManager::UnbindNativeRoot(uint32_t root_id, uint32_t node_id) {
+  if (enable_ark_c_api_) {
+    c_render_provider_->UnbindNativeRoot(root_id, node_id);
   }
 }
 

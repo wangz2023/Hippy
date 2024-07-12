@@ -22,6 +22,7 @@
 
 #include "renderer/components/base_view.h"
 #include "renderer/dom_node/hr_node_props.h"
+#include "renderer/native_render_params.h"
 #include "renderer/utils/hr_url_utils.h"
 #include "renderer/utils/hr_value_utils.h"
 #include "renderer/utils/hr_convert_utils.h"
@@ -615,6 +616,65 @@ void BaseView::OnSetPropsEnd() {
   if (toSetShadow) {
     toSetShadow = false;
     GetLocalRootArkUINode().SetShadow(shadow_);
+  }
+}
+
+void BaseView::Call(const std::string &method, const std::vector<HippyValue> params,
+                    std::function<void(const HippyValue &result)> callback) {
+  FOOTSTONE_DLOG(INFO) << "BaseView call: method " << method << ", params: " << params.size();
+  if (method == "measureInWindow") {
+    if (!callback) {
+      return;
+    }
+    
+    float statusBarHeight = NativeRenderParams::StatusBarHeight();
+    HRPosition viewPosition = GetLocalRootArkUINode().GetLayoutPositionInScreen();
+    HRSize viewSize = GetLocalRootArkUINode().GetSize();
+    
+    HippyValueObjectType result;
+    result["x"] = HippyValue(viewPosition.x);
+    result["y"] = HippyValue(viewPosition.y - statusBarHeight);
+    result["width"] = HippyValue(viewSize.width);
+    result["height"] = HippyValue(viewSize.height);
+    result["statusBarHeight"] = HippyValue(statusBarHeight);
+    callback(HippyValue(result));
+  } else if (method == "getBoundingClientRect") {
+    if (!callback) {
+      return;
+    }
+    
+    bool relToContainer = false;
+    if (!params.empty()) {
+      HippyValueObjectType param;
+      if (params[0].IsObject() && params[0].ToObject(param)) {
+        relToContainer = HRValueUtils::GetBool(param["relToContainer"], false);
+      }
+    }
+    float x = 0;
+    float y = 0;
+    HRSize viewSize = GetLocalRootArkUINode().GetSize();
+    if (relToContainer) {
+      HRPosition viewPosition = GetLocalRootArkUINode().GetLayoutPositionInWindow();
+      x = viewPosition.x;
+      y = viewPosition.y;
+      auto render = ctx_->GetNativeRender().lock();
+      if (render) {
+        HRPosition rootViewPosition = render->GetRootViewtPositionInWindow(ctx_->GetRootId());
+        x -= rootViewPosition.x;
+        y -= rootViewPosition.y;
+      }
+    } else {
+      HRPosition viewPosition = GetLocalRootArkUINode().GetLayoutPositionInScreen();
+      x = viewPosition.x;
+      y = viewPosition.y;
+    }
+        
+    HippyValueObjectType result;
+    result["x"] = HippyValue(x);
+    result["y"] = HippyValue(y);
+    result["width"] = HippyValue(viewSize.width);
+    result["height"] = HippyValue(viewSize.height);
+    callback(HippyValue(result));
   }
 }
 

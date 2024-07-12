@@ -22,38 +22,19 @@
 
 #pragma once
 
-#include "renderer/arkui/arkui_node.h"
-#include <cmath>
-#include <cstdint>
-
 namespace hippy {
 inline namespace render {
 inline namespace native {
 
-class RefreshNodeDelegate {
+class HRPixelUtils {
 public:
-  virtual ~RefreshNodeDelegate() = default;
-  virtual void OnRefreshing() {}
-  virtual void OnStateChange(int32_t state) {}
-  virtual void OnOffsetChange(float_t offset) {}
-};
-
-class RefreshNode : public ArkUINode {
-protected:
-  RefreshNodeDelegate *refreshNodeDelegate_ = nullptr;  
-public:
-  RefreshNode();
-  ~RefreshNode();
+  inline static void InitDensity(double density) { density_ = static_cast<float>(density); }
   
-  void SetRefreshRefreshing(bool flag);
-  void SetRefreshContent(ArkUI_NodeHandle nodeHandle);
-  void SetRefreshPullDownRatio(float ratio);
-  void SetRefreshOffset(float offset);
-  void SetRefreshPullToRefresh(bool flag);
+  inline static float DpToPx(float dp) { return dp * density_; }
+  inline static float PxToDp(float px) { return px / density_; }
   
-  void OnNodeEvent(ArkUI_NodeEvent *event) override;
-  void SetNodeDelegate(RefreshNodeDelegate *refreshNodeDelegate);
-  void SetRefreshing(bool beRefreshed);
+private:
+  static float density_;
 };
 
 } // namespace native

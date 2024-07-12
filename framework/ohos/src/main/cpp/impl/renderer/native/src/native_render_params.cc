@@ -20,41 +20,13 @@
  *
  */
 
-#pragma once
-
-#include "renderer/arkui/arkui_node.h"
-#include <cmath>
-#include <cstdint>
+#include "renderer/native_render_params.h"
 
 namespace hippy {
 inline namespace render {
 inline namespace native {
 
-class RefreshNodeDelegate {
-public:
-  virtual ~RefreshNodeDelegate() = default;
-  virtual void OnRefreshing() {}
-  virtual void OnStateChange(int32_t state) {}
-  virtual void OnOffsetChange(float_t offset) {}
-};
-
-class RefreshNode : public ArkUINode {
-protected:
-  RefreshNodeDelegate *refreshNodeDelegate_ = nullptr;  
-public:
-  RefreshNode();
-  ~RefreshNode();
-  
-  void SetRefreshRefreshing(bool flag);
-  void SetRefreshContent(ArkUI_NodeHandle nodeHandle);
-  void SetRefreshPullDownRatio(float ratio);
-  void SetRefreshOffset(float offset);
-  void SetRefreshPullToRefresh(bool flag);
-  
-  void OnNodeEvent(ArkUI_NodeEvent *event) override;
-  void SetNodeDelegate(RefreshNodeDelegate *refreshNodeDelegate);
-  void SetRefreshing(bool beRefreshed);
-};
+float NativeRenderParams::statusBarHeight_ = 0.f;
 
 } // namespace native
 } // namespace render
